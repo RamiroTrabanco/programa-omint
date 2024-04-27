@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDI - Ramiro Trabanco</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Omint</h1>
+    <form id="modifyForm">
+        <label for="selectScript">Prestador:</label>
+        <select id="selectScript" class="style-select">
+            <option value="">Seleccionar...</option>
+            <option value="iict">IICT - 213673</option>
+            <option value="lab_flores">Laboratorio Flores - 944698</option>
+            <option value="las_vertientes">Las Vertientes - 198785</option>
+            <option value="smi">SMI - 426787</option>
+            <option value="traumatologia_y_ortopedia">Traumatologia y Ortopedia - 034025</option>
+            <option value="turner">Turner - 074213</option>
+            <option value="visitar">Visitar - 585544</option>
+        </select><br>
+
+        <label for="originalFile">Seleccionar archivo a modificar:</label>
+        <input type="file" id="originalFile" accept=".txt" class="style-input"><br>
+
+        <label>Seleccionar destino del archivo:</label>
+        <div class="input-group">
+            <input type="text" id="modifiedFile" readonly>
+            <button type="button" onclick="selectPath()" class="style-button">Examinar</button>
+        </div>
+
+        <button type="submit" class="send-button">Enviar</button>
+    </form>
+    <script src="main.js"></script>
+</body>
+</html>
