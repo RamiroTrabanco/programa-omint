@@ -33,10 +33,12 @@ async function modificarArchivo() {
                 otroMes = prompt('Ingresa otro mes (dos digitos):');
                 otroValorPrestacion = prompt(`Ingresa el valor para el mes ${otroMes}:`);
             }
-            const agregarTercerMes = confirm('¿Quieres agregar el valor de la sesión para un tercer mes?');
-            if (agregarTercerMes) {
-                tercerMes = prompt('Ingresa un tercer mes (dos digitos):');
-                tercerValorPrestacion = prompt(`Ingresa el valor para el mes ${tercerMes}:`);
+            if (agregarOtroMes) {
+                const agregarTercerMes = confirm('¿Quieres agregar el valor de la sesión para un tercer mes?');
+                if (agregarTercerMes) {
+                    tercerMes = prompt('Ingresa un tercer mes:');
+                    tercerValorPrestacion = prompt(`Ingresa el valor de la sesión para el mes ${tercerMes}:`);
+                }
             }
         }
 
