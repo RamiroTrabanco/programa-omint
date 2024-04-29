@@ -1,32 +1,33 @@
-async function modifyFile() {
-    const originalFile = originalFileInput.files[0];
-    const modifiedFilePath = modifiedFileInput.value.trim();
+async function modificarArchivo() {
 
-    if (!originalFile || !modifiedFilePath) {
-        alert('Please select the original file and provide the path of the modified file.');
+    const archivoOriginal = archivoOriginalInput.files[0];
+    const rutaModificado = archivoModificadoInput.value.trim();
+
+    if (!archivoOriginal || !rutaModificado) {
+        alert('Por favor, selecciona el archivo original y proporciona la ruta del archivo modificado.');
         return;
     }
 
     try {
-        const originalContent = await readFile(originalFile);
-        const newContent = originalContent
-            .replace(/;CU;/g, ';II;')
-            .replace(/;30674464149;/g, ";074213;")
-            .replace(/  ;/g, ";")
-            .replace(/;MP;S/g, ";MN;C")
-            .replace(/ ;(\d{1,12}(?![\d]))/g, ';99999999')
-            .replace(/\s+;/g, ';');
+        const contenidoOriginal = await readFile(archivoOriginal);
+        const nuevoContenido = contenidoOriginal
+        .replace(/;CU;/g, ';II;')
+        .replace(/;30674464149;/g, ";074213;")
+        .replace(/  ;/g, ";")
+        .replace(/;MP;S/g, ";MN;C")
+        .replace(/ ;(\d{1,12}(?![\d]))/g, ';99999999')
+        .replace(/\s+;/g, ';');
 
-        // Use the saved handle to write to the file at the desired location
-        const writable = await modifiedFileInput.handle.createWritable();
-        await writable.write(newContent);
+        // Utiliza el handle guardado para escribir en el archivo en la ubicación deseada
+        const writable = await archivoModificadoInput.handle.createWritable();
+        await writable.write(nuevoContenido);
         await writable.close();
 
-        alert('File modified successfully.')
+        alert('Archivo modificado exitosamente.')
         location.reload();
     } catch (error) {
         console.error(error);
-        alert('An error occurred while modifying the file.');
+        alert('Ocurrió un error al modificar el archivo.');
     }
 }
 

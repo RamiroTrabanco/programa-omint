@@ -1,56 +1,61 @@
-async function modifyFile() {
-    const originalFile = originalFileInput.files[0];
-    const modifiedFilePath = modifiedFileInput.value.trim();
+async function modificarArchivo() {
 
-    if (!originalFile || !modifiedFilePath) {
-        alert('Please select the original file and provide the path of the modified file.');
+    const archivoOriginal = archivoOriginalInput.files[0];
+    const rutaModificado = archivoModificadoInput.value.trim();
+
+    if (!archivoOriginal || !rutaModificado) {
+        alert('Por favor, selecciona el archivo original y proporciona la ruta del archivo modificado.');
         return;
     }
 
     try {
-        const originalContent = await readFile(originalFile);
-        const originalLines = originalContent.split('\r\n');
-        const newLines = [];
+        const contenidoOriginal = await readFile(archivoOriginal);
+        const lineasOriginales = contenidoOriginal.split('\r\n');
+        const nuevasLineas = [];
 
-        for (let i = 0; i < originalLines.length; i++) {
-            const line = originalLines[i];
-            const columns = line.split(';');
-
-            if (columns.length >= 6) {
-                const name = columns[7];
-                const memberNumber = columns[5];
-                const code = columns[14];
-                const startDate = columns[9];
-                const endDate = columns[9];
-                const codeValue = columns[17];
-                const codeDescription = columns[15];
-                const providerNumber = 213673;
-                const providerName = "IICT";
-
-                const newLine = `CENT;AM;${name};${memberNumber};II;${providerNumber};${startDate};${endDate};${code};${codeDescription};;1;${codeValue};53.00;;;;;;II;${providerNumber};${providerName};;;;;;;99999999;MN;C;;;;;0`;
-
-                newLines.push(newLine);
+        for (let i = 0; i < lineasOriginales.length; i++) {
+            const linea = lineasOriginales[i];
+            const columnas = linea.split(';');
+            
+            // Verifica si hay suficientes columnas para acceder a columnas[5]
+            if (columnas.length >= 6) {
+                const nombre = columnas[7];
+                const numeroSocio = columnas[5];
+                const codigo = columnas[14];
+                const fechaInicio = columnas[9];
+                const fechaFin = columnas[9];
+                const valorCodigo = columnas[17];
+                const descripcionCodigo = columnas[15];
+                const numeroPrestador = 213673;
+                const nombrePrestador = "IICT"
+                
+                const nuevaLinea = `CENT;AM;${nombre};${numeroSocio};II;${numeroPrestador};${fechaInicio};${fechaFin};${codigo};${descripcionCodigo};;1;${valorCodigo};53.00;;;;;;II;${numeroPrestador};${nombrePrestador};;;;;;;99999999;MN;C;;;;;0`;
+        
+                nuevasLineas.push(nuevaLinea);
             } else {
-                console.warn(`Line ${i + 1} does not have enough columns.`);
+                console.warn(`La línea ${i + 1} no tiene suficientes columnas.`);
             }
         }
 
-        let modifiedContent = newLines.join('\n');
+        // Lee el archivo modificado antes de realizar los reemplazos
+        let contenidoModificado = nuevasLineas.join('\n');
 
-        const writable = await modifiedFileInput.handle.createWritable();
+        // Utiliza el handle guardado para escribir en el archivo en la ubicación deseada
+        const writable = await archivoModificadoInput.handle.createWritable();
 
-        let modifiedLines = modifiedContent.split('\n');
-        modifiedLines = modifiedLines.slice(8, -2);
-        modifiedContent = modifiedLines.join('\n');
+        // Eliminar la primera y la última línea del contenido modificado
+        let lineasModificadas = contenidoModificado.split('\n');
+        lineasModificadas = lineasModificadas.slice(8, -2);
+        contenidoModificado = lineasModificadas.join('\n');
 
-        await writable.write(modifiedContent);
+        await writable.write(contenidoModificado);
         await writable.close();
 
-        alert('File modified successfully.')
+        alert('Archivo modificado exitosamente.')
         location.reload();
     } catch (error) {
         console.error(error);
-        alert('An error occurred while modifying the file.');
+        alert('Ocurrió un error al modificar el archivo.');
     }
 }
 

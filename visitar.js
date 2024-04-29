@@ -1,73 +1,74 @@
-async function modifyFile() {
-    const originalFile = originalFileInput.files[0];
-    const modifiedFilePath = modifiedFileInput.value.trim();
+async function modificarArchivo() {
 
-    if (!originalFile || !modifiedFilePath) {
-        alert('Please select the original file and provide the path of the modified file.');
+    const archivoOriginal = archivoOriginalInput.files[0];
+    const rutaModificado = archivoModificadoInput.value.trim();
+
+    if (!archivoOriginal || !rutaModificado) {
+        alert('Por favor, selecciona el archivo original y proporciona la ruta del archivo modificado.');
         return;
     }
 
     try {
-        const originalContent = await readFile(originalFile);
-        const originalLines = originalContent.split('\r\n');
-        const newLines = [];
+        const contenidoOriginal = await readFile(archivoOriginal);
+        const lineasOriginales = contenidoOriginal.split('\r\n');
+        const nuevasLineas = [];
 
-        for (let i = 0; i < originalLines.length; i++) {
-            const line = originalLines[i];
-            const columns = line.split(';');
+        for (let i = 0; i < lineasOriginales.length; i++) {
+            const linea = lineasOriginales[i];
+            const columnas = linea.split(';');
 
-            // Check if there are enough columns, at least the first 13, to consider the line valid
-            if (columns.length < 13) {
-                continue;  // Skip to the next iteration if there are not enough columns
+            // Verifica si hay suficientes columnas, al menos las primeras 13, para considerar la línea válida
+            if (columnas.length < 13) {
+                continue;  // Salta a la siguiente iteración si no hay suficientes columnas
             }
 
-            const name = columns[3];
-            const memberNumber = columns[4];
-            const code = columns[6];
-            const startDate = formatDate(columns[13]);
-            const endDate = formatDate(columns[13]);
-            const descriptionCode = columns[7];
-            const codeQuantity = columns[11];
-            const codeValue = columns[9].replace(/\$| /g, '').replace(/\./g, '').replace(/,/g, '.')
+            const nombre = columnas[3];
+            const numeroSocio = columnas[4];
+            const codigo = columnas[6];
+            const fechaInicio = formatearFecha(columnas[13]);
+            const fechaFin = formatearFecha(columnas[13]);
+            const descripcionCodigo = columnas[7];
+            const cantidadCodigo = columnas[11];
+            const valorCodigo = columnas[9].replace(/\$| /g, '').replace(/\./g, '').replace(/,/g, '.')
 
-            const newLine = `CENT;AM;${name};${memberNumber};II;585544;${startDate};${endDate};${code};${descriptionCode};;${codeQuantity};${codeValue};53.00;;;;;;II;585544;VISIT;;;;;;;99999999;MN;C;;;;;0`;
+            const nuevaLinea = `CENT;AM;${nombre};${numeroSocio};II;585544;${fechaInicio};${fechaFin};${codigo};${descripcionCodigo};;${cantidadCodigo};${valorCodigo};53.00;;;;;;II;585544;VISITAR;;;;;;;99999999;MN;C;;;;;0`;
 
-            newLines.push(newLine);
+            nuevasLineas.push(nuevaLinea);
         }
 
-        // Read the modified file before making replacements
-        let modifiedContent = newLines.join('\n');
+        // Lee el archivo modificado antes de realizar los reemplazos
+        let contenidoModificado = nuevasLineas.join('\n');
 
-        // Make additional replacements
-        modifiedContent = replace(modifiedContent);
+        // Realiza los reemplazos adicionales
+        contenidoModificado = reemplazar(contenidoModificado);
 
-        // Use the saved handle to write to the file at the desired location
-        const writable = await modifiedFileInput.handle.createWritable();
+        // Utiliza el handle guardado para escribir en el archivo en la ubicación deseada
+        const writable = await archivoModificadoInput.handle.createWritable();
 
-        // Remove the first and last line of the modified content
-        let modifiedLines = modifiedContent.split('\n');
-        modifiedLines.pop(); // Remove the last line
-        modifiedContent = modifiedLines.join('\n');
+        // Eliminar la primera y la última línea del contenido modificado
+        let lineasModificadas = contenidoModificado.split('\n');
+        lineasModificadas.pop(); // Eliminar la última línea
+        contenidoModificado = lineasModificadas.join('\n');
 
-        await writable.write(modifiedContent);
+        await writable.write(contenidoModificado);
         await writable.close();
 
-        alert('File modified successfully.')
+        alert('Archivo modificado exitosamente.')
         location.reload();
     } catch (error) {
         console.error(error);
-        alert('An error occurred while modifying the file.');
+        alert('Ocurrió un error al modificar el archivo.');
     }
 }
 
-function replace(processedText) {
-    // Filter lines that do not match the pattern
-    const filteredLines = processedText.split('\n').filter(line => {
-        return !/^CENT;AM;;;II;585544;;;;;;;;53\.00;;;;;;II;585544;Laboratories TURNER;;;;;;;99999999;MN;C;;;;;0$/.test(line);
+function reemplazar(textoProcesado) {
+    // Filtra las líneas que no coinciden con el patrón
+    const lineasFiltradas = textoProcesado.split('\n').filter(linea => {
+        return !/^CENT;AM;;;II;585544;;;;;;;;53\.00;;;;;;II;585544;Laboratorios TURNER;;;;;;;99999999;MN;C;;;;;0$/.test(linea);
     });
 
-    // Join filtered lines
-    const replacedText = filteredLines.join('\n')
+    // Une las líneas filtradas
+    const textoReemplazado = lineasFiltradas.join('\n')
         .replace(/;1-/g, ";")
         .replace(/;420104/g, ';420102')
         .replace(/;420417/g, ';420101')
@@ -105,28 +106,28 @@ function replace(processedText) {
         .replace(/;420427/g, ';420101')
         .replace(/�/g, '');
 
-    return replacedText;
+    return textoReemplazado;
 }
 
-function formatDate(date) {
-    // Replace any newline or carriage return with a space
-    const cleanDate = date.replace(/[\r\n]/g, '');
+function formatearFecha(fecha) {
+    // Reemplaza cualquier salto de línea o retorno de carro por un espacio
+    const fechaLimpia = fecha.replace(/[\r\n]/g, '');
 
-    // Parse the date in Date object format
-    const dateObject = new Date(cleanDate);
+    // Parsea la fecha en formato de objeto Date
+    const fechaObjeto = new Date(fechaLimpia);
 
-    // Check if the date is valid before formatting it
-    if (!isNaN(dateObject.getTime())) {
-        // Get date components
-        const day = dateObject.getDate().toString().padStart(2, '0');
-        const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
-        const year = dateObject.getFullYear();
+    // Verifica si la fecha es válida antes de formatearla
+    if (!isNaN(fechaObjeto.getTime())) {
+        // Obtiene los componentes de la fecha
+        const dia = fechaObjeto.getDate().toString().padStart(2, '0');
+        const mes = (fechaObjeto.getMonth() + 1).toString().padStart(2, '0');
+        const anio = fechaObjeto.getFullYear();
 
-        // Format the date in the desired format
-        return `${day}/${month}/${year}`;
+        // Formatea la fecha en el formato deseado
+        return `${dia}/${mes}/${anio}`;
     } else {
-        // In case of invalid date, return the original date
-        return date;
+        // En caso de fecha inválida, devuelve la fecha original
+        return fecha;
     }
 }
 

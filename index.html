@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EDI - Ramiro Trabanco</title>
+    <title>Preprocesamiento EDI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Omint</h1>
-    <form id="modifyForm">
-        <label for="selectScript">Prestador:</label>
-        <select id="selectScript" class="style-select">
+    <form id="modificarForm">
+        <label for="selectScript">Seleccionar prestador:</label>
+        <select id="selectScript" class="estilo-select">
             <option value="">Seleccionar...</option>
+            <option value="kinemendoza">Circulo de Kinesiólogos de Mendoza - 080564</option>
             <option value="iict">IICT - 213673</option>
             <option value="lab_flores">Laboratorio Flores - 944698</option>
             <option value="las_vertientes">Las Vertientes - 198785</option>
@@ -21,13 +22,21 @@
             <option value="visitar">Visitar - 585544</option>
         </select><br>
 
-        <label for="originalFile">Seleccionar archivo a modificar:</label>
-        <input type="file" id="originalFile" accept=".txt" class="style-input"><br>
+        <label for="archivoOriginal">Seleccionar archivo a modificar:</label>
+        <input type="file" id="archivoOriginal" accept=".txt" class="estilo-input"><br>
 
         <label>Seleccionar destino del archivo:</label>
         <div class="input-group">
-            <input type="text" id="modifiedFile" readonly>
-            <button type="button" onclick="selectPath()" class="style-button">Examinar</button>
+            <input type="text" id="archivoModificado" readonly>
+            <button type="button" onclick="seleccionarRuta()" class="estilo-button">Examinar</button>
+        </div>
+
+        <div id="camposAdicionales" style="display: none;">
+            <label for="mesInput">Mes:</label>
+            <input type="text" id="mesInput">
+
+            <label for="valorPrestacionInput">Valor de la prestación:</label>
+            <input type="text" id="valorPrestacionInput">
         </div>
 
         <button type="submit" class="send-button">Enviar</button>
