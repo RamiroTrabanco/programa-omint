@@ -52,13 +52,15 @@ async function modificarArchivo() {
                 const numeroSocio = columnas[1];
                 const codigo = 902522;
                 const fechas = columnas[6].split('|'); // Divide las fechas separadas por "|"
-                let valorCodigo = columnas[10].replace(/,/g, '.');
                 const descripcionCodigo = "FISIO-KINESIO EN CONSULTORIO";
                 const nombrePrestador = "Circulo de Kinesiologos y Fisioterapeutas de Mendoza"
 
                 // Por cada fecha encontrada, crea una nueva línea
                 fechas.forEach((fecha) => {
                     fecha = fecha.trim();
+
+                    let valorCodigo = "INGRESAR VALOR DE LA PRESTACION"
+
                     if (opcionSeleccionada === 'kinemendoza' && mes && valorPrestacion && fecha.includes(`/${mes}/`)) {
                         valorCodigo = valorPrestacion;
                     }
